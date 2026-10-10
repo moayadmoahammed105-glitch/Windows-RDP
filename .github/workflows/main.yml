@@ -14,6 +14,8 @@ jobs:
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 0
         Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+        Set-Service -Name "TermService" -StartupType Automatic
+        Start-Service -Name "TermService"
 
     - name: Create RDP Account
       run: |
