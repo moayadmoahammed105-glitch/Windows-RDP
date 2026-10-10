@@ -17,9 +17,14 @@ jobs:
     - name: Create RDP Account
       run: |
         $Password = ConvertTo-SecureString "Password1234!" -AsPlainText -Force
-        New-LocalUser "runneradmin" -Password $Password -FullName "RDP User" -Description "RDP Admin User"
-        Add-LocalGroupMember -Group "Administrators" -Member "runneradmin"
-        Add-LocalGroupMember -Group "Remote Desktop Users" -Member "runneradmin"
+        if (-not (Get-LocalUser -Name "runneradmin" -ErrorAction SilentlyContinue)) {
+            New-LocalUser "runneradmin" -Password $Password -FullName "RDP User" -Description "RDP Admin User"
+            Add-LocalGroupMember -Group "Administrators" -Member "runneradmin"
+            Add-LocalGroupMember -Group "Remote Desktop Users" -Member "runneradmin"
+            Write-Host "User runneradmin created successfully."
+        } else {
+            Write-Host "User runneradmin already exists. Skipping creation."
+        }
 
     - name: Download & Install Tailscale
       run: |
